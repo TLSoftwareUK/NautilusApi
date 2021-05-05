@@ -13,20 +13,21 @@ namespace TLS.Nautilus.Api
     internal class HttpSiteClient : ISiteClient
     {
         private readonly IHttpClientFactory _clientFactory;
-        private string _bearerToken;
 
         private readonly string _baseUrl;
+        private readonly string _siteDesignerUrl;
 
         public HttpSiteClient(ApiOptions options, IHttpClientFactory clientFactory)
         {
             _clientFactory = clientFactory;
             _baseUrl = options.BaseUrl;
+            _siteDesignerUrl = options.SiteDesignerUrl;
         }
 
         public async Task<Site> GetSiteAsync(Guid id)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/site/{id}");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _bearerToken);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
 
             var client = _clientFactory.CreateClient();
             var response = await client.SendAsync(request);
@@ -44,7 +45,7 @@ namespace TLS.Nautilus.Api
             };
             
             var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/site");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _bearerToken);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
             
             request.Content = new StringContent(
                 JsonSerializer.Serialize(site),
@@ -60,7 +61,7 @@ namespace TLS.Nautilus.Api
         public async Task<IEnumerable<SiteActivity>> GetSiteActivity(Guid id)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/site/{id}/activity");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _bearerToken);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
 
             var client = _clientFactory.CreateClient();
             var response = await client.SendAsync(request);
@@ -72,7 +73,7 @@ namespace TLS.Nautilus.Api
         public async Task SaveSiteAsync(Site site)
         {
             var request = new HttpRequestMessage(HttpMethod.Put, $"{_baseUrl}/site/{site.Id}");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _bearerToken);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
             
             request.Content = new StringContent(
                 JsonSerializer.Serialize(site),
@@ -85,25 +86,20 @@ namespace TLS.Nautilus.Api
             //TODO check for success
         }
 
-        public void SetToken(string token)
+        public string GetUrl()
         {
-            _bearerToken = token;
+            return _siteDesignerUrl;
         }
 
         public async Task<IEnumerable<SiteDefinition>> GetSiteDefinitionsAsync()
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/site");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _bearerToken);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
 
             var client = _clientFactory.CreateClient();
             var response = await client.SendAsync(request);
 
             return await response.Content.ReadFromJsonAsync<IEnumerable<SiteDefinition>>();
-        }
-
-        public bool AuthSet()
-        {
-            return !string.IsNullOrWhiteSpace(_bearerToken);
         }
     }
 }

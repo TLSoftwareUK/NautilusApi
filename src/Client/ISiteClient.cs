@@ -17,8 +17,6 @@ namespace TLS.Nautilus.Api
         
         Task SaveSiteAsync(Site site);
 
-        void SetToken(string token);
-
-        bool AuthSet();
+        string GetUrl();
     }
 }

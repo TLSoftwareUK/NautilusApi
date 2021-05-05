@@ -9,6 +9,7 @@ namespace TLS.Nautilus.Api
         private IServiceCollection _collection;
 
         public string BaseUrl { get; private set; }
+        public string SiteDesignerUrl { get; private set; }
         
         public ApiOptions(IServiceCollection collection)
         {
@@ -19,18 +20,21 @@ namespace TLS.Nautilus.Api
         public IApiBuilderMode UseProduction()
         {
             BaseUrl = "https://www.tlsoftware.co.uk/api";
+            SiteDesignerUrl = "https://www.tlsoftware.co.uk/sitedesigner";
             return this;
         }
 
         public IApiBuilderMode UseStaging()
         {
             BaseUrl = "https://staging.tlsoftware.co.uk/api";
+            SiteDesignerUrl = "https://staging.tlsoftware.co.uk/sitedesigner";
             return this;
         }
 
         public IApiBuilderMode UseConfiguration(IConfiguration configuration)
         {
             BaseUrl = configuration["Api:SiteBaseUrl"];
+            SiteDesignerUrl = configuration["Api:SiteDesignerUrl"];
             return this;
         }
 
