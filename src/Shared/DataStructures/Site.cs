@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace TLS.Nautilus.Api.Shared.DataStructures
 {
@@ -8,5 +8,7 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
         public string Name { get; set; }
         public string Reference { get; set; }
         public string Owner { get; set; }
+		
+		public GeotechnicalInformation Geo { get; set; }
     }
 }

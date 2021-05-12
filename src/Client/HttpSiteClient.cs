@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -30,9 +30,16 @@ namespace TLS.Nautilus.Api
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
 
             var client = _clientFactory.CreateClient();
-            var response = await client.SendAsync(request);
+            var response = await client.SendAsync(request);         
+			
+			Site site = await response.Content.ReadFromJsonAsync<Site>();
 
-            return await response.Content.ReadFromJsonAsync<Site>();
+            if (site.Geo == null)
+            {
+                site.Geo = new GeotechnicalInformation();
+            }
+
+            return site;
         }
 
         public async Task<Guid> CreateSiteAsync(string name, string reference)
