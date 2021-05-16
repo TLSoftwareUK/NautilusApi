@@ -93,6 +93,15 @@ namespace TLS.Nautilus.Api
             //TODO check for success
         }
 
+        public async Task DeleteSiteAsync(Guid siteId)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Delete, $"{_baseUrl}/site/{siteId}");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
+            
+            var client = _clientFactory.CreateClient();
+            var response = await client.SendAsync(request);
+        }
+
         public string GetUrl()
         {
             return _siteDesignerUrl;

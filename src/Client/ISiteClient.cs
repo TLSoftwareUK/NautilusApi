@@ -16,6 +16,8 @@ namespace TLS.Nautilus.Api
         Task<IEnumerable<SiteActivity>> GetSiteActivity(Guid id);
         
         Task SaveSiteAsync(Site site);
+        
+        Task DeleteSiteAsync(Guid siteId);
 
         string GetUrl();
     }
