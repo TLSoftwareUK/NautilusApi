@@ -20,5 +20,7 @@ namespace TLS.Nautilus.Api
         Task DeleteSiteAsync(Guid siteId);
 
         string GetUrl();
+        
+        string GetSiteUrl(Guid id);
     }
 }

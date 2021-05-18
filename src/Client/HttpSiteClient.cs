@@ -39,6 +39,11 @@ namespace TLS.Nautilus.Api
                 site.Geo = new GeotechnicalInformation();
             }
 
+            if (site.Trees == null)
+            {
+                site.Trees = new List<Tree>();
+            }
+
             return site;
         }
 
@@ -105,6 +110,11 @@ namespace TLS.Nautilus.Api
         public string GetUrl()
         {
             return _siteDesignerUrl;
+        }
+
+        public string GetSiteUrl(Guid site)
+        {
+            return $"{GetUrl()}/site/{site}";
         }
 
         public async Task<IEnumerable<SiteDefinition>> GetSiteDefinitionsAsync()

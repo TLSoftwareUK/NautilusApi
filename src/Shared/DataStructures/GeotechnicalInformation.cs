@@ -9,6 +9,6 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
     public class GeotechnicalInformation
     {
         public int ModifiedPlasticityIndex { get; set; }
-        public float SafeGroundBearingPressure { get; set; }
+        public double SafeGroundBearingPressure { get; set; }
     }
 }

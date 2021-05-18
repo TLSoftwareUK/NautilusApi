@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace TLS.Nautilus.Api.Shared.DataStructures
 {
@@ -10,5 +11,7 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
         public string Owner { get; set; }
 		
 		public GeotechnicalInformation Geo { get; set; }
+        
+        public List<Tree> Trees { get; set; }
     }
 }
