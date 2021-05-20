@@ -16,15 +16,35 @@ namespace TLS.Nautilus.Api
 
         private readonly string _baseUrl;
         private readonly string _siteDesignerUrl;
+        private SiteCache _cache;
+        private SiteUpdateNotificationService _notificationService;
 
-        public HttpSiteClient(ApiOptions options, IHttpClientFactory clientFactory)
+        public HttpSiteClient(ApiOptions options, IHttpClientFactory clientFactory, SiteCache cache, SiteUpdateNotificationService notificationService)
         {
             _clientFactory = clientFactory;
             _baseUrl = options.BaseUrl;
             _siteDesignerUrl = options.SiteDesignerUrl;
+            _cache = cache;
+            _notificationService = notificationService;
         }
 
         public async Task<Site> GetSiteAsync(Guid id)
+        {
+            Site? cachedSite = _cache[id];
+            if (cachedSite != null)
+            {
+                return cachedSite;
+            }
+
+            return await GetRemoteSite(id);
+        }
+
+        public async Task<Site> ReloadSiteAsync(Guid id)
+        {
+            return await GetRemoteSite(id);
+        }
+
+        private async Task<Site> GetRemoteSite(Guid id)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/site/{id}");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
@@ -32,7 +52,7 @@ namespace TLS.Nautilus.Api
             var client = _clientFactory.CreateClient();
             var response = await client.SendAsync(request);         
 			
-			Site site = await response.Content.ReadFromJsonAsync<Site>();
+            Site site = await response.Content.ReadFromJsonAsync<Site>();
 
             if (site.Geo == null)
             {
@@ -44,6 +64,10 @@ namespace TLS.Nautilus.Api
                 site.Trees = new List<Tree>();
             }
 
+            _cache[id] = site;
+            await _notificationService.Start();
+            await _notificationService.OpenSite(id);
+
             return site;
         }
 
@@ -53,7 +77,9 @@ namespace TLS.Nautilus.Api
             {
                 Name = name,
                 Reference = reference,
-                Owner = ""
+                Owner = "",
+                Trees = new List<Tree>(),
+                Geo = new GeotechnicalInformation()
             };
             
             var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/site");

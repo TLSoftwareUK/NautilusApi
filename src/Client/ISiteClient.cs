@@ -11,6 +11,8 @@ namespace TLS.Nautilus.Api
         
         Task<Site> GetSiteAsync(Guid id);
         
+        Task<Site> ReloadSiteAsync(Guid id);
+        
         Task<Guid> CreateSiteAsync(string name, string reference);
 
         Task<IEnumerable<SiteActivity>> GetSiteActivity(Guid id);

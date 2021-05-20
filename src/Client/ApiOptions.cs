@@ -15,6 +15,8 @@ namespace TLS.Nautilus.Api
         {
             _collection = collection;
             _collection.AddSingleton<ApiOptions>(this);
+            _collection.AddSingleton<SiteUpdateNotificationService>();
+            _collection.AddSingleton<SiteCache>();
         }
 
         public IApiBuilderMode UseProduction()
