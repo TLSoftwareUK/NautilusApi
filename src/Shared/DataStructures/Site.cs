@@ -11,10 +11,16 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
         public string Name { get; set; }
         public string Reference { get; set; }
         public string Owner { get; set; }
+        
+        public bool Calculating { get; set; }
+        
+        public bool Rendering { get; set; }
 		
 		public GeotechnicalInformation Geo { get; set; }
         
         public List<Tree> Trees { get; set; }
+        
+        public List<PlotDefinition> Definitions { get; set; }
 
         public void SiteChanged()
         {

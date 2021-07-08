@@ -11,6 +11,10 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
         public string TreeReference { get; set; }
 
         public string Species { get; set; }
+        
+        public double Height { get; set; }
+        
+        public Phase Phase { get; set; }
     }
     
     public enum WaterDemand

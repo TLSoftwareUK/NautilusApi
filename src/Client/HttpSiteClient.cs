@@ -64,6 +64,11 @@ namespace TLS.Nautilus.Api
                 site.Trees = new List<Tree>();
             }
 
+            if (site.Definitions == null)
+            {
+                site.Definitions = new List<PlotDefinition>();
+            }
+
             _cache[id] = site;
             await _notificationService.Start();
             await _notificationService.OpenSite(id);
