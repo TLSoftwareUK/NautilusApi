@@ -11,13 +11,15 @@ namespace TLS.Nautilus.Api
         
         Task<Site> GetSiteAsync(Guid id);
         
-        Task<Site> ReloadSiteAsync(Guid id);
+        Task CalculateSiteAsync(Guid id);
+        
+        Task<Site> ReloadSiteAsync(Guid id, string? owner = null);
         
         Task<Guid> CreateSiteAsync(string name, string reference);
 
         Task<IEnumerable<SiteActivity>> GetSiteActivity(Guid id);
         
-        Task SaveSiteAsync(Site site);
+        Task SaveSiteAsync(Site site, string? owner = null);
         
         Task DeleteSiteAsync(Guid siteId);
 

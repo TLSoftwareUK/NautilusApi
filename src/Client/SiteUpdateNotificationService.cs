@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace TLS.Nautilus.Api
 {
-    internal class SiteUpdateNotificationService
+    internal class SiteUpdateNotificationService : ISiteUpdateNotificationService
     {
         private readonly string _baseUrl;
         private HubConnection _connection;

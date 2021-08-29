@@ -10,18 +10,22 @@ namespace TLS.Nautilus.Api
 
         public string BaseUrl { get; private set; }
         public string SiteDesignerUrl { get; private set; }
+        public string SiteServiceBaseUrl { get; private set; }
+        
+        public bool AuthEnabled { get; private set; }
         
         public ApiOptions(IServiceCollection collection)
         {
             _collection = collection;
             _collection.AddSingleton<ApiOptions>(this);
-            _collection.AddSingleton<SiteUpdateNotificationService>();
+            _collection.AddSingleton<ISiteUpdateNotificationService, NullUpdateService>();
             _collection.AddSingleton<SiteCache>();
         }
 
         public IApiBuilderMode UseProduction()
         {
             BaseUrl = "https://www.tlsoftware.co.uk/api";
+            SiteServiceBaseUrl = "https://www.tlsoftware.co.uk/api";
             SiteDesignerUrl = "https://www.tlsoftware.co.uk/sitedesigner";
             return this;
         }
@@ -29,6 +33,7 @@ namespace TLS.Nautilus.Api
         public IApiBuilderMode UseStaging()
         {
             BaseUrl = "https://staging.tlsoftware.co.uk/api";
+            SiteServiceBaseUrl = "https://staging.tlsoftware.co.uk/api";
             SiteDesignerUrl = "https://staging.tlsoftware.co.uk/sitedesigner";
             return this;
         }
@@ -37,6 +42,7 @@ namespace TLS.Nautilus.Api
         {
             BaseUrl = configuration["Api:SiteBaseUrl"];
             SiteDesignerUrl = configuration["Api:SiteDesignerUrl"];
+            SiteServiceBaseUrl = configuration["Api:SiteServiceBaseUrl"];
             return this;
         }
 
@@ -48,6 +54,21 @@ namespace TLS.Nautilus.Api
         public INautilusApi UseHttp()
         {
             _collection.AddScoped<ISiteClient, HttpSiteClient>();
+            AuthEnabled = true;
+            return this;
+        }
+        
+        public INautilusApi UseHttpNoAuth()
+        {
+            _collection.AddScoped<ISiteClient, HttpSiteClient>();
+            AuthEnabled = false;
+            return this;
+        }
+
+        public INautilusApi ReceiveUpdates()
+        {
+            _collection.AddScoped<ISiteClient, HttpSiteClient>();
+            _collection.AddSingleton<ISiteUpdateNotificationService, SiteUpdateNotificationService>();
             return this;
         }
     }
@@ -67,10 +88,12 @@ namespace TLS.Nautilus.Api
         INautilusApi UseGrpc();
         
         INautilusApi UseHttp();
+        
+        INautilusApi UseHttpNoAuth();
     }
     
     public interface INautilusApi
     {
-        
+        public INautilusApi ReceiveUpdates();
     }
 }
