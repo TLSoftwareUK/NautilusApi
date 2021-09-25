@@ -24,5 +24,7 @@ namespace TLS.Nautilus.Api
         string GetUrl();
         
         string GetSiteUrl(Guid id);
+
+        Task<String> GetExportUrlAsync(Guid id);
     }
 }
