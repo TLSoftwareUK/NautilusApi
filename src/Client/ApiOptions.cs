@@ -54,6 +54,7 @@ namespace TLS.Nautilus.Api
         public INautilusApi UseHttp()
         {
             _collection.AddScoped<ISiteClient, HttpSiteClient>();
+            _collection.AddScoped<IFileClient, HttpSiteClient>();
             AuthEnabled = true;
             return this;
         }
@@ -61,6 +62,7 @@ namespace TLS.Nautilus.Api
         public INautilusApi UseHttpNoAuth()
         {
             _collection.AddScoped<ISiteClient, HttpSiteClient>();
+            _collection.AddScoped<IFileClient, HttpSiteClient>();
             AuthEnabled = false;
             return this;
         }

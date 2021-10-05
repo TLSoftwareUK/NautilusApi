@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -10,7 +11,7 @@ using TLS.Nautilus.Api.Shared.DataStructures;
 
 namespace TLS.Nautilus.Api
 {
-    internal class HttpSiteClient : ISiteClient
+    internal class HttpSiteClient : ISiteClient, IFileClient
     {
         private readonly IHttpClientFactory _clientFactory;
 
@@ -203,6 +204,43 @@ namespace TLS.Nautilus.Api
             var response = await client.SendAsync(request);
 
             return await response.Content.ReadFromJsonAsync<IEnumerable<SiteDefinition>>();
+        }
+
+        public async Task<Guid> UploadFile(Stream content, string filename)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/file");
+
+            /*request.Content = new StringContent(
+                JsonSerializer.Serialize(site),
+                Encoding.UTF8,
+                "application/json");*/
+
+            MultipartFormDataContent upload = new MultipartFormDataContent();
+
+            var file = new StreamContent(content);
+            //file.Headers.ContentType = MediaTypeHeaderValue.Parse()
+            upload.Add(file, "files", filename);
+            request.Content = upload;            
+
+            var client = _clientFactory.CreateClient();
+            var response = await client.SendAsync(request);
+            return Guid.Parse(await response.Content.ReadAsStringAsync());
+        }
+
+        public async Task RequestExportSiteAsync(Guid id)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/site/{id}/export");
+
+            if (_authEnabled)
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
+
+            var client = _clientFactory.CreateClient();
+            var response = await client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+                return;
+
+            //TODO: Handle errors
         }
     }
 }

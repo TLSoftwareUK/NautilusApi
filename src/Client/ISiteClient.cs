@@ -12,7 +12,9 @@ namespace TLS.Nautilus.Api
         Task<Site> GetSiteAsync(Guid id);
         
         Task CalculateSiteAsync(Guid id);
-        
+
+        Task RequestExportSiteAsync(Guid id);
+
         Task<Site> ReloadSiteAsync(Guid id, string? owner = null);
         
         Task<Guid> CreateSiteAsync(string name, string reference);
