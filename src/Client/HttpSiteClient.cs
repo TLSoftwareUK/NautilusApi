@@ -224,7 +224,8 @@ namespace TLS.Nautilus.Api
 
             var client = _clientFactory.CreateClient();
             var response = await client.SendAsync(request);
-            return Guid.Parse(await response.Content.ReadAsStringAsync());
+            var responseString = (await response.Content.ReadAsStringAsync()).Replace("\"", "");
+            return Guid.Parse(responseString);
         }
 
         public async Task RequestExportSiteAsync(Guid id)
