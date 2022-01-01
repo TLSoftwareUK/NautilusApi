@@ -7,6 +7,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using TLS.Nautilus.Api.Shared;
 using TLS.Nautilus.Api.Shared.DataStructures;
 
 namespace TLS.Nautilus.Api
@@ -32,7 +33,7 @@ namespace TLS.Nautilus.Api
             _authEnabled = options.AuthEnabled;
         }
 
-        public async Task<Site> GetSiteAsync(Guid id)
+        public async Task<ISite> GetSiteAsync(Guid id)
         {
             Site? cachedSite = _cache[id];
             if (cachedSite != null)
@@ -54,12 +55,12 @@ namespace TLS.Nautilus.Api
             var response = await client.SendAsync(request);
         }
 
-        public async Task<Site> ReloadSiteAsync(Guid id, string? owner = null)
+        public async Task<ISite> ReloadSiteAsync(Guid id, string? owner = null)
         {
             return await GetRemoteSite(id, owner);
         }
 
-        private async Task<Site> GetRemoteSite(Guid id, string? owner = null)
+        private async Task<ISite> GetRemoteSite(Guid id, string? owner = null)
         {
             HttpRequestMessage request;
 

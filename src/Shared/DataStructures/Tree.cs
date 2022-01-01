@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 
 namespace TLS.Nautilus.Api.Shared.DataStructures
@@ -15,6 +16,8 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
         public double Height { get; set; }
         
         public Phase Phase { get; set; }
+
+        public Vector2 Location { get; set; }
     }
     
     public enum WaterDemand
