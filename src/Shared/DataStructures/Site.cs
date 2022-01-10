@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json.Serialization;
 
 namespace TLS.Nautilus.Api.Shared.DataStructures
@@ -85,13 +86,20 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
 
                     p.Definition = def;
                 }
-            }
+            }            
         }
 
         /// <inheritdoc/>
-        public PlotDefinition AddPlotDefinition()
+        public PlotDefinition AddPlotDefinition(string definitionName)
         {
-            throw new NotImplementedException();
+            PlotDefinition defintion = new PlotDefinition()
+            { 
+                PlotName = definitionName 
+            };
+
+            Definitions.Add(defintion);
+
+            return defintion;
         }
 
         /// <inheritdoc/>
@@ -111,6 +119,20 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
         public void RemoveParcel(Parcel parcel)
         {
             Parcels.Remove(parcel);
+        }
+
+        /// <inheritdoc/>
+        public Plot? GetPlot(Guid id)
+        {
+            foreach (Parcel p in Parcels)
+            {
+                Plot? plot = p.Plots.Find(plot => plot.Id == id);
+                if(plot != null)
+                    return plot;
+                    
+            }
+
+            return null;
         }
     }
 }

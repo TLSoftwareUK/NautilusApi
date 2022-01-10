@@ -48,6 +48,20 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
         public double FormationLevel { get; set; }
 
         public Guid StartNode { get; set; }
+        public Vector2 StartNodeLocation { get; set; }
+
         public Guid EndNode { get; set; }
+        public Vector2 EndNodeLocation { get; set; }
+
+        public double[] RequiredDepths { get; set; }
+
+        public PlotFoundationAnalysis[] Analysis { get; set; }
+    }   
+    
+    public class PlotFoundationAnalysis
+    {
+        public double ExistingGroundFormationLevel { get; set; }
+        public double ProposedGroundFormationLevel { get; set; }        
+        public Guid? DominantTree { get; set; }
     }
 }

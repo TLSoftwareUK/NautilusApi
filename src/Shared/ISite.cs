@@ -65,8 +65,9 @@ namespace TLS.Nautilus.Api.Shared
         /// <summary>
         /// Add a new plot definition to the site
         /// </summary>
+        /// <param name="definitionName">Name of new definition</param>
         /// <returns>New Plot Definition</returns>
-        PlotDefinition AddPlotDefinition();
+        PlotDefinition AddPlotDefinition(string definitionName);
 
         /// <summary>
         /// Remove an existing Plot Definition from the site
@@ -85,5 +86,12 @@ namespace TLS.Nautilus.Api.Shared
         /// </summary>
         /// <param name="parcel">Parcel to remove</param>
         void RemoveParcel(Parcel parcel);
+
+        /// <summary>
+        /// Get plot by id
+        /// </summary>
+        /// <param name="id">Id of plot to return</param>
+        /// <returns>Plot or null if not found</returns>
+        Plot? GetPlot(Guid id);
     }
 }

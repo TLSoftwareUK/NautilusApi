@@ -28,6 +28,6 @@ namespace TLS.Nautilus.Api
 
         string GetUrl();
 
-        string GetSiteUrl(Guid id);
+        string GetSiteUrl(Guid id);        
     }
 }

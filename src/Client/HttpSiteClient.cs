@@ -146,7 +146,7 @@ namespace TLS.Nautilus.Api
         }
 
 
-        public async Task SaveSiteAsync(Site site, string? owner = null)
+        public async Task SaveSiteAsync(ISite site, string? owner = null)
         {
             HttpRequestMessage request;
 
@@ -243,6 +243,6 @@ namespace TLS.Nautilus.Api
                 return;
 
             //TODO: Handle errors
-        }
+        }        
     }
 }
