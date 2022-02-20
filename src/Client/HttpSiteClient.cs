@@ -243,6 +243,11 @@ namespace TLS.Nautilus.Api
                 return;
 
             //TODO: Handle errors
-        }        
+        }
+
+        public Task DiscardSiteChangesAsync(ISite site, string? owner = null)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,21 +9,21 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
     /// <summary>
     /// Represents a single site
     /// </summary>
-    public class Site : ISite, IJsonOnDeserialized
+    public partial class Site : ObservableObject, ISite, IJsonOnDeserialized
     {
-        public event EventHandler? OnSiteChanged;
+        public event EventHandler? OnRemoteSiteChanged;
 
         /// <inheritdoc/>        
         public Guid Id { get; set; }
 
-        /// <inheritdoc/>
-        public string Name { get; set; }
+        [ObservableProperty]
+        private string _name;
 
-        /// <inheritdoc/>
-        public string Reference { get; set; }
+        [ObservableProperty]
+        private string _reference;
 
-        /// <inheritdoc/>
-        public string Owner { get; set; }
+        [ObservableProperty]
+        private string _owner;
 
         /// <inheritdoc/>
         public bool Calculating { get; set; }
@@ -31,7 +32,20 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
         public bool Rendering { get; set; }
 
         /// <inheritdoc/>
-        public GeotechnicalInformation Geo { get; set; }
+        public GeotechnicalInformation Geo
+        {
+            get
+            {
+                return _geo;
+            }
+            set
+            {
+                _geo = value;
+                _geo.PropertyChanged += (args, e) => OnPropertyChanged(nameof(Geo));
+            }
+        }
+
+        private GeotechnicalInformation _geo;
 
         /// <summary>
         /// Collection of trees in the site
@@ -70,7 +84,7 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
 
         public void SiteChanged()
         {
-            OnSiteChanged?.Invoke(this, null);
+            OnRemoteSiteChanged?.Invoke(this, null);
         }
 
         public void OnDeserialized()
@@ -98,6 +112,7 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
             };
 
             Definitions.Add(defintion);
+            OnPropertyChanged(nameof(ISite.Definitions));
 
             return defintion;
         }
@@ -107,6 +122,7 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
         {
             //TODO: Handle plots using this definition
             Definitions.Remove(plotDefinition);
+            OnPropertyChanged(nameof(ISite.Definitions));
         }
 
         /// <inheritdoc/>
@@ -119,6 +135,7 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
         public void RemoveParcel(Parcel parcel)
         {
             Parcels.Remove(parcel);
+            OnPropertyChanged(nameof(ISite.Parcels));
         }
 
         /// <inheritdoc/>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using TLS.Nautilus.Api.Shared.DataStructures;
 
 namespace TLS.Nautilus.Api.Shared
@@ -7,9 +8,9 @@ namespace TLS.Nautilus.Api.Shared
     /// <summary>
     /// Interface defining operation that can occur to a site
     /// </summary>
-    public interface ISite
+    public interface ISite : INotifyPropertyChanged
     {
-        event EventHandler? OnSiteChanged;
+        event EventHandler? OnRemoteSiteChanged;
 
         /// <summary>
         /// GUID indentifying this site

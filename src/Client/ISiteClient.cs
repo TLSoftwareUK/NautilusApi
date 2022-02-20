@@ -24,6 +24,8 @@ namespace TLS.Nautilus.Api
 
         Task SaveSiteAsync(ISite site, string? owner = null);
 
+        Task DiscardSiteChangesAsync(ISite site, string? owner = null);
+
         Task DeleteSiteAsync(Guid siteId);
 
         string GetUrl();
