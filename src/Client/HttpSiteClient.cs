@@ -71,16 +71,21 @@ namespace TLS.Nautilus.Api
             else
             {
                 request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/site/{id}");
-            }
-                
+            }                
             
             if(_authEnabled)
               request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
 
             var client = _clientFactory.CreateClient();
-            var response = await client.SendAsync(request);         
+            var response = await client.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+                throw new InvalidOperationException($"GetRemoteSite failed with http status code {response.StatusCode}");
 			
-            Site site = await response.Content.ReadFromJsonAsync<Site>();
+            Site? site = await response.Content.ReadFromJsonAsync<Site>();
+
+            if (site == null)
+                throw new InvalidOperationException($"GetRemoteSite failed with empty site");
 
             if (site.Geo == null)
             {
