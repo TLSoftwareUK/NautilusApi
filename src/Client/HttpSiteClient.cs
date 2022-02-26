@@ -71,10 +71,12 @@ namespace TLS.Nautilus.Api
             else
             {
                 request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/site/{id}");
-            }                
-            
-            if(_authEnabled)
-              request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
+            }
+
+            if (_authEnabled)
+            {                
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
+            }
 
             var client = _clientFactory.CreateClient();
             var response = await client.SendAsync(request);
@@ -103,8 +105,14 @@ namespace TLS.Nautilus.Api
             }
 
             _cache[id] = site;
-            await _notificationService.Start();
-            await _notificationService.OpenSite(id);
+            try
+            {
+                await _notificationService.Start();
+                await _notificationService.OpenSite(id);
+            } catch (Exception e)
+            {
+                int i = 0;
+            }
 
             return site;
         }
