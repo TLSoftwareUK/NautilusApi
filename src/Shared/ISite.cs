@@ -80,7 +80,7 @@ namespace TLS.Nautilus.Api.Shared
         /// Add a new parcel to the site
         /// </summary>
         /// <returns>New Parcel</returns>
-        public Parcel AddParcel();
+        public Parcel AddParcel(string parcelName);
 
         /// <summary>
         /// Remove an existing Parcel from the site

@@ -21,7 +21,21 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
         public double Bearing { get; set; }
 
         [JsonIgnore]
-        public PlotDefinition? Definition { get; internal set; }
+        public PlotDefinition? Definition
+        {
+            get
+            {
+                return _definition;
+            }
+            internal set
+            {
+                _definition = value;
+                DefinitionId = value.Id;
+            }
+        }
+
+        [JsonIgnore]
+        public PlotDefinition? _definition;
 
         public Plot()
         {

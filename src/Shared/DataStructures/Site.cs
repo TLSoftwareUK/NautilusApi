@@ -126,9 +126,17 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
         }
 
         /// <inheritdoc/>
-        public Parcel AddParcel()
+        public Parcel AddParcel(string parcelName)
         {
-            throw new NotImplementedException();
+            Parcel parcel = new Parcel()
+            {
+                Name = parcelName
+            };
+
+            Parcels.Add(parcel);
+            OnPropertyChanged(nameof(ISite.Parcels));
+
+            return parcel;
         }
 
         /// <inheritdoc/>

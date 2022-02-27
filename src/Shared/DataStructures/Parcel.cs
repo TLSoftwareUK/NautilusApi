@@ -16,5 +16,18 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
             Plots = new List<Plot>();
             Name = String.Empty;
         }
+
+        public Plot AddPlot(PlotDefinition def, string plotName)
+        {
+            Plot p = new Plot()
+            {
+                Definition = def,
+                PlotName = plotName
+            };
+
+            Plots.Add(p);
+
+            return p;
+        }
     }
 }
