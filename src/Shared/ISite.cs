@@ -64,6 +64,8 @@ namespace TLS.Nautilus.Api.Shared
         /// </summary>
         IReadOnlyList<Parcel> Parcels { get; }
 
+        IReadOnlyList<JobResult> JobResults { get; }
+
         /// <summary>
         /// Add a new plot definition to the site
         /// </summary>
@@ -81,7 +83,7 @@ namespace TLS.Nautilus.Api.Shared
         /// Add a new parcel to the site
         /// </summary>
         /// <returns>New Parcel</returns>
-        public Parcel AddParcel(string parcelName);
+        Parcel AddParcel(string parcelName);
 
         /// <summary>
         /// Remove an existing Parcel from the site
@@ -96,8 +98,10 @@ namespace TLS.Nautilus.Api.Shared
         /// <returns>Plot or null if not found</returns>
         Plot? GetPlot(Guid id);
 
-        public Tree AddTree(string reference, Vector2 location, double height, string species, Phase phase);
+        Tree AddTree(string reference, Vector2 location, double height, string species, Phase phase);
 
-        public void RemoveTree(Tree tree);
+        void RemoveTree(Tree tree);
+
+        void AddJobResult(JobResult jobResult);
     }
 }

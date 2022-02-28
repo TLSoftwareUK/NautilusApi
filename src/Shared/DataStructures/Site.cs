@@ -63,6 +63,11 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
         /// </summary>
         public List<Parcel> Parcels { get; set; }
 
+        /// <summary>
+        /// Collection of plots on the site
+        /// </summary>
+        public List<JobResult> JobResults { get; set; }
+
         /// <inheritdoc/>
         IReadOnlyList<Tree> ISite.Trees => Trees;
 
@@ -71,6 +76,9 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
 
         /// <inheritdoc/>
         IReadOnlyList<Parcel> ISite.Parcels => Parcels;
+
+        /// <inheritdoc/>
+        IReadOnlyList<JobResult> ISite.JobResults => JobResults;
 
         public Site()
         {
@@ -81,6 +89,7 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
             Trees = new List<Tree>();
             Definitions = new List<PlotDefinition>();
             Parcels = new List<Parcel>();
+            JobResults = new List<JobResult>();
         }
 
         public void SiteChanged()
@@ -178,6 +187,11 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
         public void RemoveTree(Tree tree)
         {
             Trees.Remove(tree);
+        }
+
+        public void AddJobResult(JobResult jobResult)
+        {
+            JobResults.Add(jobResult);
         }
     }
 }

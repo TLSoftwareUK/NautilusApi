@@ -55,6 +55,17 @@ namespace TLS.Nautilus.Api
             var response = await client.SendAsync(request);
         }
 
+        public async Task GenerateSiteAsync(Guid id)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/site/{id}/generate");
+
+            if (_authEnabled)
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
+
+            var client = _clientFactory.CreateClient();
+            var response = await client.SendAsync(request);
+        }
+
         public async Task<ISite> ReloadSiteAsync(Guid id, string? owner = null)
         {
             return await GetRemoteSite(id, owner);
