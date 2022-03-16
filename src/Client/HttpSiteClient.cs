@@ -217,7 +217,13 @@ namespace TLS.Nautilus.Api
             var client = _clientFactory.CreateClient();
             var response = await client.SendAsync(request);
 
-            return await response.Content.ReadFromJsonAsync<IEnumerable<SiteDefinition>>();
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<IEnumerable<SiteDefinition>>();
+            } else
+            {
+                throw new InvalidOperationException($"Invalid response to get site definitions, {response.StatusCode} {response.ReasonPhrase}");
+            }
         }
 
         public async Task<Guid> UploadFile(Stream content, string filename)
@@ -259,6 +265,37 @@ namespace TLS.Nautilus.Api
         }
 
         public Task DiscardSiteChangesAsync(ISite site, string? owner = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task AddDrawingAsync(Guid id, string name, Stream drawing, string? owner = null)
+        {
+            HttpRequestMessage request;
+            if (owner != null)
+            {
+                request = new HttpRequestMessage(HttpMethod.Put, $"{_baseUrl}/site/{id}/drawings?owner={owner}");
+            }
+            else
+            {
+                request = new HttpRequestMessage(HttpMethod.Put, $"{_baseUrl}/site/{id}/drawings");
+            }
+            
+            MultipartFormDataContent upload = new MultipartFormDataContent();
+
+            if (_authEnabled)
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
+
+            var file = new StreamContent(drawing);
+            //file.Headers.ContentType = MediaTypeHeaderValue.Parse()
+            upload.Add(file, "files", name);
+            request.Content = upload;
+
+            var client = _clientFactory.CreateClient();
+            var response = await client.SendAsync(request);                        
+        }
+
+        public Task<Stream> GetDrawingAsync(Guid id, string name, string? owner = null)
         {
             throw new NotImplementedException();
         }

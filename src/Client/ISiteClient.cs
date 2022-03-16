@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using TLS.Nautilus.Api.Shared;
 using TLS.Nautilus.Api.Shared.DataStructures;
@@ -30,6 +31,10 @@ namespace TLS.Nautilus.Api
 
         string GetUrl();
 
-        string GetSiteUrl(Guid id);        
+        string GetSiteUrl(Guid id);
+
+        Task AddDrawingAsync(Guid id, string name, Stream drawing, string? owner = null);
+
+        Task<Stream> GetDrawingAsync(Guid id, string name, string? owner = null);
     }
 }
