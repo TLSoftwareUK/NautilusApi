@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,9 +7,12 @@ using System.Threading.Tasks;
 
 namespace TLS.Nautilus.Api.Shared.DataStructures
 {
-    public class GeotechnicalInformation
+    public partial class GeotechnicalInformation : ObservableObject
     {
-        public int ModifiedPlasticityIndex { get; set; }
-        public double SafeGroundBearingPressure { get; set; }
+        [ObservableProperty]
+        private int _modifiedPlasticityIndex;
+
+        [ObservableProperty]
+        private double _safeGroundBearingPressure;
     }
 }

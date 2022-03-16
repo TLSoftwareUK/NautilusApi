@@ -1,38 +1,104 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using TLS.Nautilus.Api.Shared;
 using TLS.Nautilus.Api.Shared.DataStructures;
 
 namespace TLS.Nautilus.Api
 {
-    internal class HttpSiteClient : ISiteClient
+    internal class HttpSiteClient : ISiteClient, IFileClient
     {
         private readonly IHttpClientFactory _clientFactory;
 
         private readonly string _baseUrl;
         private readonly string _siteDesignerUrl;
+        private SiteCache _cache;
+        private ISiteUpdateNotificationService _notificationService;
 
-        public HttpSiteClient(ApiOptions options, IHttpClientFactory clientFactory)
+        private bool _authEnabled;
+
+        public HttpSiteClient(ApiOptions options, IHttpClientFactory clientFactory, SiteCache cache, ISiteUpdateNotificationService notificationService)
         {
             _clientFactory = clientFactory;
-            _baseUrl = options.BaseUrl;
+            _baseUrl = options.SiteServiceBaseUrl;
             _siteDesignerUrl = options.SiteDesignerUrl;
+            _cache = cache;
+            _notificationService = notificationService;
+            _authEnabled = options.AuthEnabled;
         }
 
-        public async Task<Site> GetSiteAsync(Guid id)
+        public async Task<ISite> GetSiteAsync(Guid id)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/site/{id}");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
+            Site? cachedSite = _cache[id];
+            if (cachedSite != null)
+            {
+                return cachedSite;
+            }
+
+            return await GetRemoteSite(id);
+        }
+
+        public async Task CalculateSiteAsync(Guid id)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/site/{id}/calculate");
+            
+            if(_authEnabled)
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
 
             var client = _clientFactory.CreateClient();
-            var response = await client.SendAsync(request);         
+            var response = await client.SendAsync(request);
+        }
+
+        public async Task GenerateSiteAsync(Guid id)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/site/{id}/generate");
+
+            if (_authEnabled)
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
+
+            var client = _clientFactory.CreateClient();
+            var response = await client.SendAsync(request);
+        }
+
+        public async Task<ISite> ReloadSiteAsync(Guid id, string? owner = null)
+        {
+            return await GetRemoteSite(id, owner);
+        }
+
+        private async Task<ISite> GetRemoteSite(Guid id, string? owner = null)
+        {
+            HttpRequestMessage request;
+
+            if (owner != null)
+            {
+                request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/site/{id}?owner={owner}");
+            }
+            else
+            {
+                request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/site/{id}");
+            }
+
+            if (_authEnabled)
+            {                
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
+            }
+
+            var client = _clientFactory.CreateClient();
+            var response = await client.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+                throw new InvalidOperationException($"GetRemoteSite failed with http status code {response.StatusCode}");
 			
-			Site site = await response.Content.ReadFromJsonAsync<Site>();
+            Site? site = await response.Content.ReadFromJsonAsync<Site>();
+
+            if (site == null)
+                throw new InvalidOperationException($"GetRemoteSite failed with empty site");
 
             if (site.Geo == null)
             {
@@ -44,6 +110,21 @@ namespace TLS.Nautilus.Api
                 site.Trees = new List<Tree>();
             }
 
+            if (site.Definitions == null)
+            {
+                site.Definitions = new List<PlotDefinition>();
+            }
+
+            _cache[id] = site;
+            try
+            {
+                await _notificationService.Start();
+                await _notificationService.OpenSite(id);
+            } catch (Exception e)
+            {
+                int i = 0;
+            }
+
             return site;
         }
 
@@ -53,11 +134,16 @@ namespace TLS.Nautilus.Api
             {
                 Name = name,
                 Reference = reference,
-                Owner = ""
+                Owner = "",
+                Trees = new List<Tree>(),
+                Geo = new GeotechnicalInformation(),
+                Definitions = new List<PlotDefinition>()
             };
             
             var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/site");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
+            
+            if(_authEnabled)
+              request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
             
             request.Content = new StringContent(
                 JsonSerializer.Serialize(site),
@@ -73,7 +159,9 @@ namespace TLS.Nautilus.Api
         public async Task<IEnumerable<SiteActivity>> GetSiteActivity(Guid id)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/site/{id}/activity");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
+            
+            if(_authEnabled)
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
 
             var client = _clientFactory.CreateClient();
             var response = await client.SendAsync(request);
@@ -82,11 +170,22 @@ namespace TLS.Nautilus.Api
         }
 
 
-        public async Task SaveSiteAsync(Site site)
+        public async Task SaveSiteAsync(ISite site, string? owner = null)
         {
-            var request = new HttpRequestMessage(HttpMethod.Put, $"{_baseUrl}/site/{site.Id}");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
-            
+            HttpRequestMessage request;
+
+            if (owner != null)
+            {
+                request = new HttpRequestMessage(HttpMethod.Put, $"{_baseUrl}/site/{site.Id}?owner={owner}");
+            }
+            else
+            {
+                request = new HttpRequestMessage(HttpMethod.Put, $"{_baseUrl}/site/{site.Id}");
+            }
+
+            if (_authEnabled)
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
+
             request.Content = new StringContent(
                 JsonSerializer.Serialize(site),
                 Encoding.UTF8,
@@ -94,14 +193,16 @@ namespace TLS.Nautilus.Api
 
             var client = _clientFactory.CreateClient();
             var response = await client.SendAsync(request);
-            
+
             //TODO check for success
         }
 
         public async Task DeleteSiteAsync(Guid siteId)
         {
             var request = new HttpRequestMessage(HttpMethod.Delete, $"{_baseUrl}/site/{siteId}");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
+            
+            if(_authEnabled)
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
             
             var client = _clientFactory.CreateClient();
             var response = await client.SendAsync(request);
@@ -120,12 +221,94 @@ namespace TLS.Nautilus.Api
         public async Task<IEnumerable<SiteDefinition>> GetSiteDefinitionsAsync()
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/site");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
+            
+            if(_authEnabled)
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
 
             var client = _clientFactory.CreateClient();
             var response = await client.SendAsync(request);
 
-            return await response.Content.ReadFromJsonAsync<IEnumerable<SiteDefinition>>();
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<IEnumerable<SiteDefinition>>();
+            } else
+            {
+                throw new InvalidOperationException($"Invalid response to get site definitions, {response.StatusCode} {response.ReasonPhrase}");
+            }
+        }
+
+        public async Task<Guid> UploadFile(Stream content, string filename)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/file");
+
+            /*request.Content = new StringContent(
+                JsonSerializer.Serialize(site),
+                Encoding.UTF8,
+                "application/json");*/
+
+            MultipartFormDataContent upload = new MultipartFormDataContent();
+
+            var file = new StreamContent(content);
+            //file.Headers.ContentType = MediaTypeHeaderValue.Parse()
+            upload.Add(file, "files", filename);
+            request.Content = upload;            
+
+            var client = _clientFactory.CreateClient();
+            var response = await client.SendAsync(request);
+            var responseString = (await response.Content.ReadAsStringAsync()).Replace("\"", "");
+            return Guid.Parse(responseString);
+        }
+
+        public async Task RequestExportSiteAsync(Guid id)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/site/{id}/export");
+
+            if (_authEnabled)
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
+
+            var client = _clientFactory.CreateClient();
+            var response = await client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+                return;
+
+            //TODO: Handle errors
+        }
+
+        public Task DiscardSiteChangesAsync(ISite site, string? owner = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task AddDrawingAsync(Guid id, string name, Stream drawing, string? owner = null)
+        {
+            HttpRequestMessage request;
+            if (owner != null)
+            {
+                request = new HttpRequestMessage(HttpMethod.Put, $"{_baseUrl}/site/{id}/drawings?owner={owner}");
+            }
+            else
+            {
+                request = new HttpRequestMessage(HttpMethod.Put, $"{_baseUrl}/site/{id}/drawings");
+            }
+            
+            MultipartFormDataContent upload = new MultipartFormDataContent();
+
+            if (_authEnabled)
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
+
+            var file = new StreamContent(drawing);
+            //file.Headers.ContentType = MediaTypeHeaderValue.Parse()
+            upload.Add(file, "files", name);
+            request.Content = upload;
+
+            var client = _clientFactory.CreateClient();
+            var response = await client.SendAsync(request);                        
+        }
+
+        public Task<Stream> GetDrawingAsync(Guid id, string name, string? owner = null)
+        {
+            throw new NotImplementedException();
         }
     }
 }

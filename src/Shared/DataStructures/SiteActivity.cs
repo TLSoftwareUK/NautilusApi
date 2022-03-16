@@ -17,6 +17,8 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
     public enum Activity
     {
         SiteCreated,
+        NameChanged,
+        ReferenceChanged,
         //Geo
         ModifiedPlasticityIndexChanged,
         GroundBearingPressureChanged,

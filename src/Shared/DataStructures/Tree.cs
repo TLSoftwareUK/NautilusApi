@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 
 namespace TLS.Nautilus.Api.Shared.DataStructures
@@ -11,6 +12,17 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
         public string TreeReference { get; set; }
 
         public string Species { get; set; }
+        
+        public double Height { get; set; }
+        
+        public Phase Phase { get; set; }
+
+        public Vector2 Location { get; set; }
+
+        public Tree()
+        {
+            Id = Guid.NewGuid();
+        }
     }
     
     public enum WaterDemand
