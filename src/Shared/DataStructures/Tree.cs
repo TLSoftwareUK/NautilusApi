@@ -18,6 +18,11 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
         public Phase Phase { get; set; }
 
         public Vector2 Location { get; set; }
+
+        public Tree()
+        {
+            Id = Guid.NewGuid();
+        }
     }
     
     public enum WaterDemand

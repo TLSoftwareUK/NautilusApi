@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text.Json.Serialization;
 
 namespace TLS.Nautilus.Api.Shared.DataStructures
@@ -158,6 +159,25 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
             }
 
             return null;
+        }
+
+        public Tree AddTree(string reference, Vector2 location, double height, string species, Phase phase)
+        {
+            Tree tree = new Tree()
+            {
+                TreeReference = reference,
+                Location = location,
+                Height = height,
+                Species = species,
+                Phase = phase
+            };
+            Trees.Add(tree);
+            return tree;
+        }
+
+        public void RemoveTree(Tree tree)
+        {
+            Trees.Remove(tree);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Numerics;
 using TLS.Nautilus.Api.Shared.DataStructures;
 
 namespace TLS.Nautilus.Api.Shared
@@ -94,5 +95,9 @@ namespace TLS.Nautilus.Api.Shared
         /// <param name="id">Id of plot to return</param>
         /// <returns>Plot or null if not found</returns>
         Plot? GetPlot(Guid id);
+
+        public Tree AddTree(string reference, Vector2 location, double height, string species, Phase phase);
+
+        public void RemoveTree(Tree tree);
     }
 }
