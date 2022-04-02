@@ -12,7 +12,7 @@ using TLS.Nautilus.Api.Shared.DataStructures;
 
 namespace TLS.Nautilus.Api
 {
-    internal class HttpSiteClient : ISiteClient, IFileClient
+    internal class HttpSiteClient : ISiteClient, IFileClient, IProfileClient
     {
         private readonly IHttpClientFactory _clientFactory;
 
@@ -309,6 +309,52 @@ namespace TLS.Nautilus.Api
         public Task<Stream> GetDrawingAsync(Guid id, string name, string? owner = null)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<IProfile?> GetProfileAsync()
+        {
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/profile");
+                        
+            if (_authEnabled)
+            {
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
+            }
+
+            var client = _clientFactory.CreateClient();
+            var response = await client.SendAsync(request);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                return null;
+
+            if (!response.IsSuccessStatusCode)
+                throw new InvalidOperationException($"GetProfileAsync failed with http status code {response.StatusCode}");
+
+            Profile? profile = await response.Content.ReadFromJsonAsync<Profile>();
+
+            if (profile == null)
+                throw new InvalidOperationException($"GetProfileAsync failed with empty or malformed profile");
+            
+            return profile;
+        }
+
+        public async Task SaveProfileAsync(IProfile profile)
+        {
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, $"{_baseUrl}/profile");
+
+            if (_authEnabled)
+            {
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
+            }
+
+            Profile body = profile as Profile;
+                        
+            request.Content = new StringContent(
+                JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
+
+            var client = _clientFactory.CreateClient();
+            var response = await client.SendAsync(request);
+            
+            //TODO: Error handling
         }
     }
 }

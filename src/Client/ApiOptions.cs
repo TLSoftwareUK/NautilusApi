@@ -53,8 +53,10 @@ namespace TLS.Nautilus.Api
 
         public INautilusApi UseHttp()
         {
+            //TODO: Move to one instance??
             _collection.AddScoped<ISiteClient, HttpSiteClient>();
             _collection.AddScoped<IFileClient, HttpSiteClient>();
+            _collection.AddScoped<IProfileClient, HttpSiteClient>();
             AuthEnabled = true;
             return this;
         }
