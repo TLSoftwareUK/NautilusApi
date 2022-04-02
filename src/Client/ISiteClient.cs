@@ -35,8 +35,8 @@ namespace TLS.Nautilus.Api
 
         string GetSiteUrl(Guid id);
 
-        Task AddDrawingAsync(Guid id, string name, Stream drawing, string? owner = null);
+        Task AddDrawingAsync(Guid id, string name, Stream drawing, DrawingType type, string? owner = null);
 
-        Task<Stream> GetDrawingAsync(Guid id, string name, string? owner = null);
+        Task<Stream> GetDrawingAsync(Guid id, string name, DrawingType type, string? owner = null);
     }
 }

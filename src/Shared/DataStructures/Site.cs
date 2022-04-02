@@ -1,12 +1,14 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 namespace TLS.Nautilus.Api.Shared.DataStructures
-{    
+{
     /// <summary>
     /// Represents a single site
     /// </summary>
@@ -52,7 +54,7 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
         /// Collection of trees in the site
         /// </summary>
         public List<Tree> Trees { get; set; }
-        
+
         /// <summary>
         /// Collection of Plot Definitions used in the site
         /// </summary>
@@ -68,6 +70,8 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
         /// </summary>
         public List<JobResult> JobResults { get; set; }
 
+        public List<string> Xrefs { get; set; }
+
         /// <inheritdoc/>
         IReadOnlyList<Tree> ISite.Trees => Trees;
 
@@ -80,6 +84,8 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
         /// <inheritdoc/>
         IReadOnlyList<JobResult> ISite.JobResults => JobResults;
 
+        IReadOnlyList<string> ISite.Xrefs => Xrefs;
+
         public Site()
         {
             Name = String.Empty;
@@ -90,6 +96,7 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
             Definitions = new List<PlotDefinition>();
             Parcels = new List<Parcel>();
             JobResults = new List<JobResult>();
+            Xrefs = new List<string>();
         }
 
         public void SiteChanged()
@@ -110,15 +117,15 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
 
                     p.Definition = def;
                 }
-            }            
+            }
         }
 
         /// <inheritdoc/>
         public PlotDefinition AddPlotDefinition(string definitionName)
         {
             PlotDefinition defintion = new PlotDefinition()
-            { 
-                PlotName = definitionName 
+            {
+                PlotName = definitionName
             };
 
             Definitions.Add(defintion);
@@ -162,9 +169,9 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
             foreach (Parcel p in Parcels)
             {
                 Plot? plot = p.Plots.Find(plot => plot.Id == id);
-                if(plot != null)
+                if (plot != null)
                     return plot;
-                    
+
             }
 
             return null;
@@ -192,6 +199,11 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
         public void AddJobResult(JobResult jobResult)
         {
             JobResults.Add(jobResult);
+        }
+
+        public void AddXref(string name)
+        {
+            Xrefs.Add(name);
         }
     }
 }

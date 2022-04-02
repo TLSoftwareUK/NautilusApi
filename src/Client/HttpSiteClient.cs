@@ -280,16 +280,16 @@ namespace TLS.Nautilus.Api
             throw new NotImplementedException();
         }
 
-        public async Task AddDrawingAsync(Guid id, string name, Stream drawing, string? owner = null)
+        public async Task AddDrawingAsync(Guid id, string name, Stream drawing, DrawingType type, string? owner = null)
         {
             HttpRequestMessage request;
             if (owner != null)
             {
-                request = new HttpRequestMessage(HttpMethod.Put, $"{_baseUrl}/site/{id}/drawings?owner={owner}");
+                request = new HttpRequestMessage(HttpMethod.Put, $"{_baseUrl}/site/{id}/drawings?owner={owner}&type={type}");
             }
             else
             {
-                request = new HttpRequestMessage(HttpMethod.Put, $"{_baseUrl}/site/{id}/drawings");
+                request = new HttpRequestMessage(HttpMethod.Put, $"{_baseUrl}/site/{id}/drawings?type={type}");
             }
             
             MultipartFormDataContent upload = new MultipartFormDataContent();
@@ -306,7 +306,7 @@ namespace TLS.Nautilus.Api
             var response = await client.SendAsync(request);                        
         }
 
-        public Task<Stream> GetDrawingAsync(Guid id, string name, string? owner = null)
+        public Task<Stream> GetDrawingAsync(Guid id, string name, DrawingType type, string? owner = null)
         {
             throw new NotImplementedException();
         }

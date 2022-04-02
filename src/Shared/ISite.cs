@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Numerics;
+using System.Threading.Tasks;
 using TLS.Nautilus.Api.Shared.DataStructures;
 
 namespace TLS.Nautilus.Api.Shared
@@ -66,6 +68,8 @@ namespace TLS.Nautilus.Api.Shared
 
         IReadOnlyList<JobResult> JobResults { get; }
 
+        IReadOnlyList<string> Xrefs { get; }
+
         /// <summary>
         /// Add a new plot definition to the site
         /// </summary>
@@ -103,5 +107,13 @@ namespace TLS.Nautilus.Api.Shared
         void RemoveTree(Tree tree);
 
         void AddJobResult(JobResult jobResult);
+
+        void AddXref(string name);
+    }
+
+    public enum DrawingType
+    {
+        GeneratedOutput,
+        Xref
     }
 }
