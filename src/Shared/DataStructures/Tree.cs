@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Numerics;
 using System.Text;
 
@@ -11,7 +12,7 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
 
         public string TreeReference { get; set; }
 
-        public string Species { get; set; }
+        public TreeSpecies Species { get; set; }
         
         public double Height { get; set; }
         
@@ -42,5 +43,26 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
     {
         Proposed,
         Existing
+    }
+
+    //TODO: Add other species
+    public enum TreeSpecies
+    {
+        [Description("")] Undefined,
+        [Description("English Elm")] EnglishElm,
+        [Description("Wheatley Elm")] WheatleyELm,
+        [Description("Wych Elm")] WychElm,
+        [Description("Eucalyptus")] Eucalyptus,
+        [Description("Hawthorn")] Hawthorn,
+        [Description("English Oak")] EnglishOak,
+        [Description("Holm Oak")] HolmOak,
+        [Description("Red Oak")] RedOak,
+        [Description("Turkey Oak")] TurkeyOak,
+        [Description("Hybrid Black Poplar")] HybridBlackPoplar,
+        [Description("Lombardy Poplar")] LombardyPoplar,
+        [Description("White Poplar")] WhitePoplar,
+        [Description("Crack Willow")] CrackWillow,
+        [Description("Weeping Willow")] WeepingWillow,
+        [Description("White Willow")] WhiteWillow
     }
 }

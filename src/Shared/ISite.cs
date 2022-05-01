@@ -102,7 +102,7 @@ namespace TLS.Nautilus.Api.Shared
         /// <returns>Plot or null if not found</returns>
         Plot? GetPlot(Guid id);
 
-        Tree AddTree(string reference, Vector2 location, double height, string species, Phase phase);
+        Tree AddTree(string reference, Vector2 location, double height, TreeSpecies species, Phase phase);
 
         void RemoveTree(Tree tree);
 

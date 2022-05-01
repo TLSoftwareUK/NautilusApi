@@ -177,7 +177,7 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
             return null;
         }
 
-        public Tree AddTree(string reference, Vector2 location, double height, string species, Phase phase)
+        public Tree AddTree(string reference, Vector2 location, double height, TreeSpecies species, Phase phase)
         {
             Tree tree = new Tree()
             {
