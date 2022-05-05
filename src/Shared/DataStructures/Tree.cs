@@ -23,6 +23,8 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
         public Tree()
         {
             Id = Guid.NewGuid();
+            Species = TreeSpecies.Undefined;
+            Location = Vector2.Zero;
         }
     }
     

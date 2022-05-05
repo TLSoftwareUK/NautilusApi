@@ -187,7 +187,14 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
                 Species = species,
                 Phase = phase
             };
+            return AddTree(tree);
+        }
+
+        public Tree AddTree(Tree tree)
+        {
             Trees.Add(tree);
+            this.OnPropertyChanged(nameof(Trees));
+            //TODO: Add binding to tree to detect changes
             return tree;
         }
 

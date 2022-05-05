@@ -104,6 +104,8 @@ namespace TLS.Nautilus.Api.Shared
 
         Tree AddTree(string reference, Vector2 location, double height, TreeSpecies species, Phase phase);
 
+        Tree AddTree(Tree tree);
+
         void RemoveTree(Tree tree);
 
         void AddJobResult(JobResult jobResult);
