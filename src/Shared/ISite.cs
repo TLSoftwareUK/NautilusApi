@@ -66,9 +66,9 @@ namespace TLS.Nautilus.Api.Shared
         /// </summary>
         IReadOnlyList<Parcel> Parcels { get; }
 
-        IReadOnlyList<JobResult> JobResults { get; }
+        IReadOnlyList<JobResult> JobResults { get; }               
 
-        IReadOnlyList<string> Xrefs { get; }
+        List<SupportFile> SupportFiles { get; }
 
         /// <summary>
         /// Add a new plot definition to the site
@@ -108,9 +108,7 @@ namespace TLS.Nautilus.Api.Shared
 
         void RemoveTree(Tree tree);
 
-        void AddJobResult(JobResult jobResult);
-
-        void AddXref(string name);
+        void AddJobResult(JobResult jobResult);        
     }
 
     public enum DrawingType

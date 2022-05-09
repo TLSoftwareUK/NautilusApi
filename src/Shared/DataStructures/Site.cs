@@ -69,9 +69,7 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
         /// Collection of plots on the site
         /// </summary>
         public List<JobResult> JobResults { get; set; }
-
-        public List<string> Xrefs { get; set; }
-
+        
         /// <inheritdoc/>
         IReadOnlyList<Tree> ISite.Trees => Trees;
 
@@ -83,8 +81,7 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
 
         /// <inheritdoc/>
         IReadOnlyList<JobResult> ISite.JobResults => JobResults;
-
-        IReadOnlyList<string> ISite.Xrefs => Xrefs;
+        public List<SupportFile> SupportFiles { get; protected set; }
 
         public Site()
         {
@@ -96,7 +93,7 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
             Definitions = new List<PlotDefinition>();
             Parcels = new List<Parcel>();
             JobResults = new List<JobResult>();
-            Xrefs = new List<string>();
+            SupportFiles = new List<SupportFile>();
         }
 
         public void SiteChanged()
@@ -206,11 +203,6 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
         public void AddJobResult(JobResult jobResult)
         {
             JobResults.Add(jobResult);
-        }
-
-        public void AddXref(string name)
-        {
-            Xrefs.Add(name);
         }
     }
 }

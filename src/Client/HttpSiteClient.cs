@@ -280,7 +280,7 @@ namespace TLS.Nautilus.Api
             throw new NotImplementedException();
         }
 
-        public async Task AddDrawingAsync(Guid id, string name, Stream drawing, DrawingType type, string? owner = null)
+        public async Task<ISite> AddDrawingAsync(Guid id, string name, Stream drawing, DrawingType type, string? owner = null)
         {
             HttpRequestMessage request;
             if (owner != null)
@@ -303,7 +303,12 @@ namespace TLS.Nautilus.Api
             request.Content = upload;
 
             var client = _clientFactory.CreateClient();
-            var response = await client.SendAsync(request);                        
+            var response = await client.SendAsync(request);              
+            
+            //TODO: Add error handling
+
+            return await ReloadSiteAsync(id, owner);
+
         }
 
         public Task<Stream> GetDrawingAsync(Guid id, string name, DrawingType type, string? owner = null)
