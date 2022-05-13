@@ -70,6 +70,8 @@ namespace TLS.Nautilus.Api.Shared
 
         List<SupportFile> SupportFiles { get; }
 
+        IDrawingIssues Issues { get; }
+
         /// <summary>
         /// Add a new plot definition to the site
         /// </summary>

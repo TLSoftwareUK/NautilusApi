@@ -14,6 +14,7 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
 
     public enum SupportFileType
     {
+        GeneratedDrawing,
         Xref
     }
 }
