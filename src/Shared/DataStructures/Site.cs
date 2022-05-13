@@ -82,11 +82,11 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
         /// <inheritdoc/>
         IReadOnlyList<JobResult> ISite.JobResults => JobResults;
         
-        public List<SupportFile> SupportFiles { get; protected set; }
+        public List<SupportFile> SupportFiles { get; set; }
 
         IDrawingIssues ISite.Issues => Issues;
 
-        public DrawingIssues Issues { get; protected set; }
+        public DrawingIssues Issues { get; set; }
 
         public Site()
         {
