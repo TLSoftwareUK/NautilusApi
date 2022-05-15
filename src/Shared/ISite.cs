@@ -39,12 +39,12 @@ namespace TLS.Nautilus.Api.Shared
         /// <summary>
         /// Indicates if a calculation has been queued
         /// </summary>
-        bool Calculating { get; set; }
+        JobStatus Calculating { get; set; }
 
         /// <summary>
         /// Indicates if a render has been queued
         /// </summary>
-        bool Rendering { get; set; }
+        JobStatus Rendering { get; set; }
 
         /// <summary>
         /// Geotechnicl Data on the site
@@ -117,5 +117,13 @@ namespace TLS.Nautilus.Api.Shared
     {
         GeneratedOutput,
         Xref
+    }
+
+    public enum JobStatus
+    {
+        Queued,
+        Running,
+        Failed,
+        Complete
     }
 }

@@ -29,10 +29,10 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
         private string _owner;
 
         /// <inheritdoc/>
-        public bool Calculating { get; set; }
+        public JobStatus Calculating { get; set; } = JobStatus.Complete;
 
         /// <inheritdoc/>
-        public bool Rendering { get; set; }
+        public JobStatus Rendering { get; set; } = JobStatus.Complete;
 
         /// <inheritdoc/>
         public GeotechnicalInformation Geo
