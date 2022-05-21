@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Numerics;
 using System.Text.Json.Serialization;
 
 namespace TLS.Nautilus.Api.Shared.DataStructures
@@ -16,7 +15,7 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
 
         public Guid DefinitionId { get; set; }
 
-        public Vector2 Location { get; set; }
+        public DoubleVector2 Location { get; set; }
 
         public double Bearing { get; set; }
 
@@ -62,10 +61,10 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
         public double FormationLevel { get; set; }
 
         public Guid StartNode { get; set; }
-        public Vector2 StartNodeLocation { get; set; }
+        public DoubleVector2 StartNodeLocation { get; set; }
 
         public Guid EndNode { get; set; }
-        public Vector2 EndNodeLocation { get; set; }
+        public DoubleVector2 EndNodeLocation { get; set; }
 
         public double[] RequiredDepths { get; set; }
 

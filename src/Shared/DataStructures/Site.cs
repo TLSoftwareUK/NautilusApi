@@ -1,11 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Numerics;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace TLS.Nautilus.Api.Shared.DataStructures
 {
@@ -99,6 +95,7 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
             Parcels = new List<Parcel>();
             JobResults = new List<JobResult>();
             SupportFiles = new List<SupportFile>();
+            Issues = new DrawingIssues();
         }
 
         public void SiteChanged()
@@ -179,7 +176,7 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
             return null;
         }
 
-        public Tree AddTree(string reference, Vector2 location, double height, TreeSpecies species, Phase phase)
+        public Tree AddTree(string reference, DoubleVector2 location, double height, TreeSpecies species, Phase phase)
         {
             Tree tree = new Tree()
             {

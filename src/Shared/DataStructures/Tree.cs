@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Numerics;
 using System.Text;
 
 namespace TLS.Nautilus.Api.Shared.DataStructures
@@ -18,13 +17,13 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
         
         public Phase Phase { get; set; }
 
-        public Vector2 Location { get; set; }
+        public DoubleVector2 Location { get; set; }
 
         public Tree()
         {
             Id = Guid.NewGuid();
             Species = TreeSpecies.Undefined;
-            Location = Vector2.Zero;
+            Location = DoubleVector2.Zero;
         }
     }
     

@@ -4,6 +4,6 @@ namespace TLS.Nautilus.Api.Shared
 {
     public interface IGroundModel
     {
-        double GetElevation(Vector2 location);
+        double GetElevation(DoubleVector2 location);
     }
 }
