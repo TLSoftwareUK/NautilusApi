@@ -4,8 +4,8 @@ namespace TLS.Nautilus.Api.Shared
 {
     public struct DoubleVector2
     {
-        double X { get; set; }
-        double Y { get; set; }
+        public double X { get; set; }
+        public double Y { get; set; }
 
         public DoubleVector2(double x, double y)
         {

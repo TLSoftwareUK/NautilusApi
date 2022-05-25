@@ -51,7 +51,7 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
     {
         [Description("")] Undefined,
         [Description("English Elm")] EnglishElm,
-        [Description("Wheatley Elm")] WheatleyELm,
+        [Description("Wheatley Elm")] WheatleyElm,
         [Description("Wych Elm")] WychElm,
         [Description("Eucalyptus")] Eucalyptus,
         [Description("Hawthorn")] Hawthorn,
