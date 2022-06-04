@@ -311,9 +311,24 @@ namespace TLS.Nautilus.Api
 
         }
 
-        public Task<Stream> GetDrawingAsync(Guid id, string name, DrawingType type, string? owner = null)
+        public async Task<Stream> GetDrawingAsync(Guid id, string name, DrawingType type, string? owner = null)
         {
-            throw new NotImplementedException();
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/site/{id}/drawings?name={name}&type={type}");            
+
+            if (_authEnabled)
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
+
+            var client = _clientFactory.CreateClient();
+            var response = await client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsStreamAsync();
+            }
+            else
+            {
+                throw new InvalidOperationException($"Invalid response to get site definitions, {response.StatusCode} {response.ReasonPhrase}");
+            }
         }
 
         public async Task<IProfile?> GetProfileAsync()

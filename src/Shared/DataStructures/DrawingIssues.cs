@@ -7,9 +7,14 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
 {
     public class DrawingIssues : IDrawingIssues
     {
-        public List<SupportFile> PreviewDrawings = new List<SupportFile>();
+        public List<DrawingIssueFile> PreviewDrawings { get; set; }
 
-        IReadOnlyList<SupportFile> IDrawingIssues.PreviewDrawings => PreviewDrawings.OrderBy(pd => pd.Filename).ToList();
+        IReadOnlyList<DrawingIssueFile> IDrawingIssues.PreviewDrawings => PreviewDrawings.OrderBy(pd => pd.DrawingNumber).ToList();
+
+        public DrawingIssues()
+        {
+            PreviewDrawings = new List<DrawingIssueFile>();
+        }
 
         public void ClearPreviews()
         {

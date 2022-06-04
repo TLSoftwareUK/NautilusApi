@@ -6,7 +6,7 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
 {
     public interface IDrawingIssues
     {
-        IReadOnlyList<SupportFile> PreviewDrawings { get; }
+        IReadOnlyList<DrawingIssueFile> PreviewDrawings { get; }
 
         void ClearPreviews();
     }
