@@ -342,7 +342,7 @@ namespace TLS.Nautilus.Api
             return profile;
         }
 
-        public async Task SaveProfileAsync(IProfile profile)
+        public async Task UpdateProfileAsync(IProfile profile)
         {
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, $"{_baseUrl}/profile");
 
@@ -359,6 +359,26 @@ namespace TLS.Nautilus.Api
             var client = _clientFactory.CreateClient();
             var response = await client.SendAsync(request);
             
+            //TODO: Error handling
+        }
+
+        public async Task CreateProfileAsync(IProfile profile)
+        {
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/profile");
+
+            if (_authEnabled)
+            {
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", NautilusApi.BearerToken);
+            }
+
+            Profile body = profile as Profile;
+
+            request.Content = new StringContent(
+                JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
+
+            var client = _clientFactory.CreateClient();
+            var response = await client.SendAsync(request);
+
             //TODO: Error handling
         }
     }

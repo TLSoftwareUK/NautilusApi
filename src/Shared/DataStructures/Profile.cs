@@ -1,7 +1,9 @@
-﻿using System;
+﻿using IronstoneSettings;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace TLS.Nautilus.Api.Shared.DataStructures
 {
@@ -13,7 +15,7 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
 
             this.Id = id;
             Label = label;
-            Org = org;            
+            Org = org;                            
         }
 
         public string Id { get; set; }        
@@ -28,7 +30,8 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
 
         public string Surname { get { return GetProperty("surname"); } set { SetProperty("surname", value); } }
 
-        public Dictionary<string, PropertyKeyValuePair[]> Properties { get; set; }        
+        public Dictionary<string, PropertyKeyValuePair[]> Properties { get; set; }
+        public MainSettings IronstoneSettings { get { return GetSettings(); } set { SetSettings(value); } }
 
         public static Profile FromDynamic(dynamic result)
         {
@@ -38,7 +41,7 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
             };
 
             string json = JsonSerializer.Serialize(result);
-            Profile p = JsonSerializer.Deserialize<Profile>(json, options);
+            Profile p = JsonSerializer.Deserialize<Profile>(json, options);            
             return p;
         }
 
@@ -64,15 +67,59 @@ namespace TLS.Nautilus.Api.Shared.DataStructures
             Properties[id] = new PropertyKeyValuePair[] { new PropertyKeyValuePair() { Id = id, Value = newValue } };
         }
 
+        private MainSettings _cachedSettings;
+
+        private MainSettings GetSettings()
+        {            
+            if (_cachedSettings != null)
+                return _cachedSettings;
+
+            JsonSerializerOptions options = new()
+            {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            };
+
+            string settingData = GetProperty("ironstonesettings");
+
+            if (string.IsNullOrEmpty(settingData))
+            {                
+                return new MainSettings();
+            }
+            else
+            {
+                Console.WriteLine("Decache called");
+                _cachedSettings = JsonSerializer.Deserialize<MainSettings>(settingData, options);
+                return _cachedSettings;
+            }            
+        }
+
+        private void SetSettings(MainSettings settings)
+        {            
+            _cachedSettings = settings;
+        }
+
         public string GetUpdateString()
         {
+            return GetCreationString();
+        }
+
+        public string GetCreationString()
+        {           
             StringBuilder build = new StringBuilder( $"g.addV('{Label}')");
-            build.Append($".property('id','{Id}')");                        
-            
-            foreach (var prop in Properties.Values)
+            build.Append($".property('id','{Id}')");
+
+            JsonSerializerOptions options = new()
             {
-                var propEntry = prop[0];
-                build.Append($".property('{propEntry.Id}','{propEntry.Value}')");
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            };
+            string settings = JsonSerializer.Serialize(_cachedSettings, options);
+            SetProperty("ironstonesettings", settings);
+
+            foreach (var prop in Properties)
+            {
+                var key = prop.Key;
+                var propEntry = prop.Value[0];
+                build.Append($".property('{key}','{propEntry.Value}')");
             }
 
             return build.ToString();

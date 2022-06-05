@@ -14,4 +14,8 @@
     <PackageReference Include="System.Text.Json" Version="6.0.1" />
 	<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />	  
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\IronstoneSettings\IronstoneSettings.csproj" />
+  </ItemGroup>
 </Project>

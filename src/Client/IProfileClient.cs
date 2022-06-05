@@ -10,6 +10,7 @@ namespace TLS.Nautilus.Api
     {
         Task<IProfile?> GetProfileAsync();
 
-        Task SaveProfileAsync(IProfile profile);
+        Task UpdateProfileAsync(IProfile profile);
+        Task CreateProfileAsync(IProfile profile);
     }
 }
